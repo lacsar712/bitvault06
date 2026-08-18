@@ -75,7 +75,12 @@ func CopyFirmwareHead(blob []byte, n int) []byte {
 	if n > len(blob) {
 		n = len(blob)
 	}
-	return blob[:n]
+	// Allocate an independent slice so callers can mutate the returned head
+	// without polluting the source blob. Returning blob[:n] would alias the
+	// underlying array and let edits write through to the original firmware.
+	out := make([]byte, n)
+	copy(out, blob[:n])
+	return out
 }
 
 func WaitCommit(ctx context.Context, d time.Duration) error {
