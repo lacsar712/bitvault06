@@ -75,7 +75,9 @@ func CopyFirmwareHead(blob []byte, n int) []byte {
 	if n > len(blob) {
 		n = len(blob)
 	}
-	return blob[:n]
+	out := make([]byte, n)
+	copy(out, blob[:n])
+	return out
 }
 
 func WaitCommit(ctx context.Context, d time.Duration) error {
